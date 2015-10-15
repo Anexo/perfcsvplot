@@ -1,7 +1,6 @@
-# Basic script to import CSv files exported from Perf tool and plotting them.    
+# Basic script to import CSV files exported from Perf tool and plotting them.    
 #------------------------------------------------------------------------------
 import matplotlib.pyplot as plt
-import numpy as np
 import csv #For working with CSV
 import sys
 
@@ -33,11 +32,11 @@ with open(data, 'rb') as csvfile:
 	for row in query:
 		x = row[0]
 		x = float(x)
-		x_array.append(x)
+		x_array.append(x) #column 0 to array
 
 		y = row[1]
 		y = float(y)
-		y_array.append(y)
+		y_array.append(y) #column 1 to array
 
 #Defining plot:
 line, = plt.plot(x_array, y_array, '-', linewidth=2)
