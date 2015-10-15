@@ -6,6 +6,9 @@ import csv #For working with CSV
 import sys
 
 x = []
+y = []
+x_array = []
+y_array = []
 
 #Select the file:
 print "Select the file to open (with path and extension)?"
@@ -29,12 +32,15 @@ with open(data, 'rb') as csvfile:
 		next(query)	#Skip blank row
 	for row in query:
 		x = row[0]
-		print x
+		x = float(x)
+		x_array.append(x)
+
 		y = row[1]
-		print y
+		y = float(y)
+		y_array.append(y)
 
 #Defining plot:
-line = plt.plot(x, y, '-', linewidth=2)
+line, = plt.plot(x_array, y_array, '-', linewidth=2)
 
 #Print plot:
 plt.title(title)
