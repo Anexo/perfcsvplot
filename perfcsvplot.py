@@ -1,5 +1,16 @@
 # Basic script to import CSV files exported from Perf tool and plotting them.    
 #------------------------------------------------------------------------------
+
+#**"THE COFFEEWARE LICENSE" (Revision 2):**
+#------------------------------------------
+#Anexo[1] wrote this code. As long as you retain this notice you can do whatever you want with this stuff. If we meet some day, and you think this stuff is worth it, you can buy me a coffee in return. 
+#
+#Also, you might consider following me on [social network][2] for any comments and/or questions you might have and if you'd like you can send me a donation at any time to support my work, ask me how!
+#
+#  [1]: http:tomaslopezfragosorumeu.com
+#  [2]: https://github.com/Anexo
+#------------------------------------------
+
 import matplotlib.pyplot as plt
 import csv #For working with CSV
 import sys
