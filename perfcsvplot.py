@@ -5,6 +5,8 @@ import numpy as np
 import csv #For working with CSV
 import sys
 
+x = []
+
 #Select the file:
 print "Select the file to open (with path and extension)?"
 data = raw_input("> ")
@@ -16,13 +18,23 @@ ylabel = raw_input("> ")
 
 #Open the CSV:
 with open(data, 'rb') as csvfile:
-	query = csv.reader(csvfile, delimiter=',')
+	#Check if header present:
+	has_header = csv.Sniffer().has_header(csvfile.read(1024))
+	csvfile.seek (0) #return to top
+	
+	query = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
+	
+	if has_header:
+		next(query) #Skip header
+		next(query)	#Skip blank row
 	for row in query:
-		print ', '.join(row)
+		x = row[0]
+		print x
+		y = row[1]
+		print y
 
-#Ejemplo con el seno: 
-x = np.linspace(0, 10)
-line, = plt.plot(x, np.sin(x), '-', linewidth=2)
+#Defining plot:
+line = plt.plot(x, y, '-', linewidth=2)
 
 #Print plot:
 plt.title(title)
