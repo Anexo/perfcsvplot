@@ -9,12 +9,18 @@ Best Regards, Anexo
 
 -------------------------------------------------------------------
 
-**"THE COFFEEWARE LICENSE" (Revision 2):**
+Copyright (C) 2015 by Tomás López-Fragoso Rumeu [Github](https://github.com/Anexo)
 
-Anexo[1] wrote this code. As long as you retain this notice you can do whatever you want with this stuff. If we meet some day, and you think this stuff is worth it, you can buy me a coffee in return. 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Also, you might consider following me on [social network][2] for any comments and/or questions you might have and if you'd like you can send me a donation at any time to support my work, ask me how!
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-  [1]: http:tomaslopezfragosorumeu.com
-  [2]: https://github.com/Anexo
