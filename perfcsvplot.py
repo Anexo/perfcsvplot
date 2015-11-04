@@ -28,11 +28,15 @@ y_array = []
 #Select the file:
 print "Select the file to open (with path and extension)?"
 data = raw_input("> ")
-#Select the title and ylabel:
+#Select the title, ylabel, time interval and unit:
 print "Select the title of the plot"
 title = raw_input("> ")
 print "Select the Y label of the plot"
 ylabel = raw_input("> ")
+print "Time interval (For 500ms enter 0.5)?"
+time_interval = float(raw_input("> "))
+print "Unit measured?"
+unit = raw_input("> ")
 
 #Open the CSV:
 with open(data, 'rb') as csvfile:
@@ -54,13 +58,30 @@ with open(data, 'rb') as csvfile:
 		y = float(y)
 		y_array.append(y) #column 1 to array
 
+#Calculating sum of x_array:
+total_x = sum(x_array)
+print "Total counts: %.2f" %total_x +" "+ unit 
+#Energy in Watt if nedeed:
+if unit.lower() == "joules":
+	total_time = len(y_array)
+	total_watt = total_x / (total_time * time_interval)
+	print "Total Power: %.2f Watts" %total_watt
+
 #Defining plot:
 line, = plt.plot(x_array, y_array, '-', linewidth=2)
 
-#Print plot:
+#Configure axes:
 plt.title(title)
-plt.xlabel('Time (s)')
+plt.xlabel("Time (s)")
 plt.ylabel(ylabel)
+
+#Plot total energy:
+if unit.lower() == "joules":
+	plt.figtext(0.6, 0.02, "%.2f" %total_watt +" Watts - "+"%.2f" %total_x +" "+ unit)
+else:
+	plt.figtext(0.6, 0.02, "%.2f" %total_x +" "+ unit)
+	
+#Print plot:
 plt.show()
 print "Plot finished. Bye!"
 
