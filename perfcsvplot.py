@@ -59,12 +59,12 @@ with open(data, 'rb') as csvfile:
 		y_array.append(y) #column 1 to array
 
 #Calculating sum of x_array:
-total_x = sum(x_array)
-print "Total counts: %.2f" %total_x +" "+ unit 
+total_y = sum(y_array)
+print "Total counts: %.2f" %total_y +" "+ unit 
 #Energy in Watt if nedeed:
 if unit.lower() == "joules":
-	total_time = len(y_array)
-	total_watt = total_x / (total_time * time_interval)
+	total_time = len(x_array)
+	total_watt = total_y / (total_time * time_interval)
 	print "Total Power: %.2f Watts" %total_watt
 
 #Defining plot:
@@ -77,7 +77,7 @@ plt.ylabel(ylabel)
 
 #Plot total energy:
 if unit.lower() == "joules":
-	plt.figtext(0.6, 0.02, "%.2f" %total_watt +" Watts - "+"%.2f" %total_x +" "+ unit)
+	plt.figtext(0.6, 0.02, "%.2f" %total_watt +" Watts - "+"%.2f" %total_y +" "+ unit)
 else:
 	plt.figtext(0.6, 0.02, "%.2f" %total_x +" "+ unit)
 	
