@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Basic script to import CSV files exported from Perf tool and plotting them.    
 #------------------------------------------------------------------------------
 
