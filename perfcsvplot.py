@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Basic script to import CSV files exported from Perf tool and plotting them.    
+# Basic script to import CSV files exported with perfcall script and plotting them.    
 #------------------------------------------------------------------------------
 
 #Copyright (C) 2015 by Tomas Lopez-Fragoso Rumeu <https://github.com/Anexo>
@@ -19,73 +19,206 @@
 #------------------------------------------
 
 import matplotlib.pyplot as plt
-import csv #For working with CSV
+import csv
 import sys
+import json
 
-x = []
+x = [],[]
 y = []
 x_array = []
 y_array = []
+cpu_array =[]
 
-#Select the file:
-print "Select the file to open (with path and extension)?"
-data = raw_input("> ")
-#Select the title, ylabel, time interval and unit:
-print "Select the title of the plot"
-title = raw_input("> ")
-print "Select the Y label of the plot"
-ylabel = raw_input("> ")
-print "Time interval (For 500ms enter 0.5)?"
-time_interval = float(raw_input("> "))
-print "Unit measured?"
-unit = raw_input("> ")
+#If user does not introduce args, they will be ask through prompt:
+if len(sys.argv) == 1:
+	#Questions to user:
+	#Select the file:
+	print "Select the file to open (with path and extension)?"
+	data = raw_input("> ")
+	#Select the title, ylabel, time interval and unit:
+	print "Select the title of the plot"
+	title = raw_input("> ")
+	print "Select the Y label of the plot"
+	ylabel = raw_input("> ")
+	print "Time interval (For 500ms enter 0.5)?"
+	time_interval = float(raw_input("> "))
+	print "Unit measured?"
+	unit = raw_input("> ")
 
-#Open the CSV:
-with open(data, 'rb') as csvfile:
-	#Check if header present:
-	has_header = csv.Sniffer().has_header(csvfile.read(1024))
-	csvfile.seek (0) #return to top
-	
-	query = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
-	
-	if has_header:
-		next(query) #Skip header
-		next(query)	#Skip blank row
-	for row in query:
-		x = row[0]
-		x = float(x)
-		x_array.append(x) #column 0 to array
+	#Open the CSV:
+	with open(data, 'rb') as csvfile:
+		#Check if header present:
+		has_header = csv.Sniffer().has_header(csvfile.read(1024))
+		csvfile.seek (0) #return to top
+		
+		query = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
+		
+		if has_header:
+			next(query) #Skip header
+			next(query)	#Skip blank row
+		for row in query:
+			x = row[0]
+			x = float(x)
+			x_array.append(x) #column 0 to array
 
-		y = row[1]
-		y = float(y)
-		y_array.append(y) #column 1 to array
+			y = row[2]
+			y = float(y)
+			y_array.append(y) #column 1 to array
+else:
+	#Open the CSV:
+	data = sys.argv[1]
+	with open(data, 'rb') as csvfile:
 
-#Calculating sum of x_array:
-total_y = sum(y_array)
-print "Total counts: %.2f" %total_y +" "+ unit 
-#Energy in Watt if nedeed:
-if unit.lower() == "joules":
-	total_time = len(x_array)
-	total_watt = total_y / (total_time * time_interval)
-	print "Total Power: %.2f Watts" %total_watt
+		ylabel = 'Energy (Joules)'
+		unit = 'Joules'
+		
+		query = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
+		
+		for row in range(23):
+			if row == 1:
+				date = next(query)
+			elif row == 2:
+				uname = next(query)
+			elif row == 6:
+				title = next(query)
+			elif row == 11:
+				cores = next(query)
+			elif row == 13:
+				time_interval = next(query)
+			elif row == 17:
+				number_cores = next(query)
+			else:
+				next(query)
 
-#Defining plot:
-line, = plt.plot(x_array, y_array, '-', linewidth=2)
+		#Cores array to int array:
+		cores = map(int, cores)
+		#Number of cores from list to int:
+		number_cores = map(int, number_cores)
+
+		#Arrays global time and power:
+		for row in query:
+			x = row[0]
+			x = float(x)
+			x_array.append(x) #column 0 to array
+			cpu = row[1]
+			cpu_array.append(cpu) #column 0 to array
+			y = row[2]
+			y = float(y)
+			y_array.append(y) #column 2 to array
+
+		energy_core_ord_array = []
+		time_ord_array = []
+		#Dividing array into energy and time per core:
+		for i in range(number_cores[0]):
+			e =  0 + i
+   			for j in range(len(x_array)/(int(number_cores[0]))):
+   				time_ord = x_array[e]
+   				time_ord_array.append(time_ord)
+   				energy_core_ord = y_array[e]
+   				energy_core_ord_array.append(energy_core_ord)
+   				e = e + int(number_cores[0])
+
+   		#Getting real time lenght and energy array per core:
+   		final_time_ord_array = []
+   		for i in range(len(x_array)/(int(number_cores[0]))):
+   			final_time_ord = time_ord_array[i]
+   			final_time_ord_array.append(final_time_ord)
+		final_energy_core_ord_array = []
+   		a = 0
+		for j in range(number_cores[0]):
+			for i in range(len(x_array)/(int(number_cores[0]))):
+				final_energy_core_ord = energy_core_ord_array[a + i]
+	   			final_energy_core_ord_array.append(final_energy_core_ord)
+	   		globals()['core%s' % j] = final_energy_core_ord_array
+	   		final_energy_core_ord_array = []
+	   		a = a + 12
+
+	   	#TEST: Printing Time and CPU arrays
+	   	print ''
+   		print 'Final time'
+   		print final_time_ord_array
+   		print ''
+   		for j in range(number_cores[0]):
+   			print cpu_array[j]
+   			print globals()['core%s' % j]
+		print ''
+
+		#Calculating time interval and defining title:
+		time_interval = float(time_interval[0])/1000
+		title = str(title)
+
+		#Calculating sum of energy array per core:
+		for j in range(number_cores[0]):
+			total_joules = sum(globals()['core%s' % j])
+			print "Total counts for: " + cpu_array[j] + " : %.2f" %total_joules +" "+ unit 
+			total_time = len(final_time_ord_array)
+			total_watt = total_joules / (total_time * time_interval)
+			print "Total Power for: " + cpu_array[j] + " : %.2f Watts" %total_watt
+			globals()['joules_cpu%s' % j] = total_joules
+			globals()['watt_cpu%s' % j] = total_watt
+
+#Defining plot with multiple cores:
+for i in range(number_cores[0]):
+	plt.plot(final_time_ord_array, globals()['core%s' % i], '-', linewidth=2)
+'''
+#Plot total energy per core:
+indent = 0
+for i in range(number_cores[0]):
+	plt.figtext(0+indent, 0.02, cpu_array[i] + ": " + "%.2f" %globals()['watt_cpu%s' % i] +" Watts - "+"%.2f" %globals()['joules_cpu%s' % i] +" "+ unit)
+	indent = indent + 0.2
+'''
+#Annotating each plot line to core:
+indent = 0
+for i in range(number_cores[0]):
+	plt.annotate(cpu_array[i], xy=(final_time_ord_array[0], globals()['core%s' % i][0]), xytext=(final_time_ord_array[0],globals()['core%s' % i][0]+indent))
+	indent = indent + 0.15
+
+indent = 0
+bbox_args = dict(boxstyle="round", fc="0.8")
+for i in range(number_cores[0]):
+	plt.text(final_time_ord_array[len(final_time_ord_array)-1],2+indent, cpu_array[i] + ": " + "%.2f" %globals()['watt_cpu%s' % i] +" Watts - "+"%.2f" %globals()['joules_cpu%s' % i] +" "+ unit, bbox=bbox_args)
+	indent = indent + 0.5
 
 #Configure axes:
 plt.title(title)
 plt.xlabel("Time (s)")
 plt.ylabel(ylabel)
-
-#Plot total energy:
-if unit.lower() == "joules":
-	plt.figtext(0.6, 0.02, "%.2f" %total_watt +" Watts - "+"%.2f" %total_y +" "+ unit)
-else:
-	plt.figtext(0.6, 0.02, "%.2f" %total_x +" "+ unit)
 	
 #Print plot:
 plt.show()
-print "Plot finished. Bye!"
+print ''
+print "Plot finished."
+
+#--------------------------------------
+#JSON export:
+def json_dict(time,power, description):
+
+	js_dict = dict(zip(
+		["$schema",
+		 "1title",
+		 "2description",
+		 "3date",
+		 "4cpu",
+		 "5time",
+		 "6power"],
+		["http://json-schema.org/draft-04/schema#",
+		 "Perfcall and Perfcsvplot JSON export",
+		  description,
+		  date,
+		  uname,
+		  time,
+		  power]
+	))
+	return js_dict
+
+j_dict = json_dict(final_time_ord_array, y_array, title)
+
+with open('output.json', 'w') as outfile:
+	outfile.write(json.dumps(j_dict, indent=4, sort_keys=True, separators=(',', ': ')))
+
+print ''
+print "JSON export finished."
+print "Bye!"
 
 #Exit script
 sys.exit()
