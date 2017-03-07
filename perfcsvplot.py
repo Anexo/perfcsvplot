@@ -27,7 +27,7 @@ import operator
 
 #Getting data from header:
 data = sys.argv[1]
-with open(data, 'rb') as csvfile:
+with open(data, 'rt') as csvfile:
 	unit = 'Joules'
 	query = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
 	for row in range(23):
@@ -60,7 +60,7 @@ cpuList = data.groupby(['cpu'])
 #CPU dict
 cpuEnergy = {}
 
-#Loop for indexing CPU and energy 
+#Loop for indexing CPU and energy
 for i in range(len(cpuList)):
     eachCPU = 'CPU' + str(i+1)
     cpuEnergy[eachCPU] = list(cpuList.get_group('CPU' + str(i+1))['energy'])
@@ -115,8 +115,8 @@ plt.ylabel('Energy (Joules)')
 
 #Print plot:
 plt.show()
-print ''
-print 'Plot finished.'
+print ('')
+print ('Plot finished.')
 
 #JSON export:
 def json_dict(time,power, description):
@@ -142,6 +142,6 @@ j_dict = json_dict(times, cpuList, title)
 with open('output.json', 'w') as outfile:
 	outfile.write(json.dumps(j_dict, indent=4, sort_keys=True, separators=(',', ': ')))
 
-print ''
-print "JSON export finished."
-print "Bye!"
+print ('')
+print ("JSON export finished.")
+print ("Bye!")
