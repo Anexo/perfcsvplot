@@ -48,11 +48,15 @@ with open(data, 'rt') as csvfile:
 csvfile = sys.argv[1]
 
 #The data read by csv reader into data variable:
-data = pd.read_csv(csvfile, header=None, skipinitialspace=True, skiprows=23, names=['time', 'cpu', 'energy','unit','event'])
+data = pd.read_csv(csvfile, header=None, skipinitialspace=True, skiprows=23, names=['time'], usecols=[0], delimiter=';')
 #print data
 
 #Formatting time array
 times = list(pd.unique(data.time.ravel()))
+
+#The data read by csv reader into data variable:
+data = pd.read_csv(csvfile, header=None, skipinitialspace=True, skiprows=23, names=['cpu', 'energy','unit','event'], usecols=[1,2,3,4], delimiter=';', decimal=',')
+#print data
 
 #Group data by CPU
 cpuList = data.groupby(['cpu'])
