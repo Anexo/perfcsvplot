@@ -105,10 +105,12 @@ time_interval = float(time_interval[0])/1000
 
 #Plot total energy per core:
 indent = 0
-bbox_args = dict(boxstyle="round", fc="0.8")
+bbox_args = dict(boxstyle="round", fc="0.2")
 for k,v in cpuEnergy.items():
 	total_joules = sum(v)
+	print (total_joules)
 	total_watt  = total_joules / total_time
+	print (total_watt)
 	plt.text(times[-1], 0.5+indent, k + ' ' + "%.2f" %total_watt + ' Watts - ' + "%.2f" %total_joules + ' Joules', bbox=bbox_args)
 	indent = indent + 0.5
 
@@ -130,12 +132,16 @@ def json_dict(time,power, description):
 		 "2description",
 		 "3date",
 		 "4cpu",
-		 "5time",
+		 "5Joules",
+		 "6Watt",
+		 "7time",
 		 "Cores"],
 		["Perfcall and Perfcsvplot JSON export",
 		  str(description),
 		  str(date),
 		  str(uname),
+		  str(total_joules),
+		  str(total_watt),
 		  time,
 		  cpuEnergy]
 	))
